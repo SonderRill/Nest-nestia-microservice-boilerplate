@@ -1,0 +1,23 @@
+docker-build:
+  only:
+    - develop
+    - main
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+    # - echo "$YC_JSON_KEY" | docker login -u json_key --password-stdin cr.yandex
+  script:
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        tag="latest"
+        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+      else
+        tag="$CI_COMMIT_REF_SLUG"
+        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+      fi
+    - docker pull ${REGISTRY_PATH}:${tag} || true
+    - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from ${REGISTRY_PATH}:${tag} --tag "${REGISTRY_PATH}:${tag}" .
+    - docker push "${REGISTRY_PATH}:${tag}"

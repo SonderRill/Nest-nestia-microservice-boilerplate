@@ -1,0 +1,24 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Typia for prisma https://typia.io/docs/utilization/prisma/ 
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  /// @minLength 5
+  /// @maxLength 80
+  title     String
+  email     String   @unique /// @format email
+  body      String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
