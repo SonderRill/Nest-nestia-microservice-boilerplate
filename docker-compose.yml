@@ -10,7 +10,7 @@ services:
     volumes:
       - 'postgres-data:/var/lib/postgresql/data' # монтируем собранные данные в Docker volume
     ports:
-      - "5444:5432"
+      - '5444:5432'
 
   prometheus:
     image: prom/prometheus:latest
@@ -43,7 +43,12 @@ services:
       - sh
       - -euc
       - |
+        # Директории для provisioning
         mkdir -p /etc/grafana/provisioning/datasources
+        mkdir -p /etc/grafana/provisioning/dashboards
+        mkdir -p /var/lib/grafana/dashboards
+
+        # Конфигурация datasources
         cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
         apiVersion: 1
         datasources:
@@ -56,13 +61,31 @@ services:
           isDefault: true
           version: 1
           editable: false
+          uid: DS_LOKI
         - name: Prometheus
           type: prometheus
           access: proxy
           url: http://localhost:9090 
           editable: false
         EOF
+
+        # Конфигурация dashboards
+        cat <<EOF > /etc/grafana/provisioning/dashboards/dashboard.yaml
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            updateIntervalSeconds: 10
+            options:
+              path: /var/lib/grafana/dashboards
+        EOF
+
         /run.sh
+    volumes:
+      - ./grafana-dashboards:/var/lib/grafana/dashboards
     network_mode: 'host'
     restart: unless-stopped
 
