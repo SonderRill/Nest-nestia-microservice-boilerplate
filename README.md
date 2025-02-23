@@ -11,6 +11,14 @@
 - [h2load](https://nghttp2.org/documentation/h2load-howto.html)
 - [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers)
 
+
+Доступны следующие клиенты из docker-compose:
+
+- [Grafana](https://grafana.com) c предустановленными дашбордами и [Loki](https://github.com/grafana/loki?tab=readme-ov-file) - http://localhost:3000
+- [Prometheus](https://prometheus.io/) - http://localhost:9090
+
+Swagger - http://localhost:7000/api
+
 ### Начало разработки
 
 ##### Установка зависимостей
@@ -73,7 +81,7 @@ npm run build:swagger
 
 ## 🔨 Работа в процессе
 - [ ] Mетрики socket.io
-
+- [ ] Привести ошибки к единому виду и добавить их в генерацию OpenAPI документа
 
 ## 🚀 Завершено
 - [x] Добавить pino как движок для логирования + опциональное логирование в Loki
@@ -83,7 +91,6 @@ npm run build:swagger
    - кастомных метрик в стиле NestJS
 - [x] Добавить health checks
 - [x] Добавить Prisma
-- [x] Привести ошибки к единому виду и добавить их в генерацию OpenAPI документа
 
 
 <!-- ---
