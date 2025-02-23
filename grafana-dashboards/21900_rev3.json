@@ -543,7 +543,9 @@
   "preload": false,
   "refresh": "1m",
   "schemaVersion": 40,
-  "tags": [],
+  "tags": [
+    "pino http"
+  ],
   "templating": {
     "list": [
       {
