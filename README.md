@@ -9,7 +9,6 @@
 - [Nestia](https://nestia.io/)
 - [Typia](https://typia.io/)
 - [h2load](https://nghttp2.org/documentation/h2load-howto.html)
-- [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers)
 
 
 Доступны следующие клиенты из docker-compose:
@@ -20,6 +19,34 @@
 Swagger - http://localhost:7000/api
 
 ### Начало разработки
+
+Предпочтительным редактором является Visual Studio Code, позволяющий запускать проект внутри [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers) с одинаковым окружением вне зависимости от локальной машины. В .devcontainer настроена виртуальная машина Linux с поддержкой Docker in Docker
+
+Для запуска в Windows потребуется [Docker Desktop](https://www.docker.com/products/docker-desktop/), использующий [WSL](https://learn.microsoft.com/ru-ru/windows/wsl/install) в качестве бэкенда. Открывать проект следует из файловой системы WSL
+
+После открытия проекта, редактор предложит открыть его в контейнере. Все необходимые модули будут установлены автоматически
+
+![alt text](image.png)
+
+##### Применение миграций
+
+```bash
+npm run prisma:dev
+```
+
+##### Старт
+
+```bash
+npm run start:dev
+```
+
+#### Без Visual Studio Code
+
+##### Запуск контейнеров в фоновом режиме 
+
+```bash
+docker-compose up -d
+```
 
 ##### Установка зависимостей
 
