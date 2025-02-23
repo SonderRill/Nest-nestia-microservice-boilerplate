@@ -9,6 +9,7 @@
 - [Nestia](https://nestia.io/)
 - [Typia](https://typia.io/)
 - [h2load](https://nghttp2.org/documentation/h2load-howto.html)
+- [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers)
 
 
 Доступны следующие клиенты из docker-compose:
