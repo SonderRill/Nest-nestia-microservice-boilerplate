@@ -1,10 +1,12 @@
-import { ConfigModuleOptions } from '@nestjs/config';
-import * as Joi from 'joi';
+import { ConfigModuleOptions } from '@nestjs/config'
+import * as Joi from 'joi'
 
 export const config: ConfigModuleOptions = {
   isGlobal: true,
   validationSchema: Joi.object({
-    NODE_ENV: Joi.string().valid('develop', 'production').default('develop'),
+    NODE_ENV: Joi.string()
+      .valid('development', 'production')
+      .default('development'),
     PORT: Joi.number().port().default(3000),
     LOKI_URL: Joi.string().uri().allow(''),
     LOKI_USERNAME: Joi.string().allow(''),
@@ -18,4 +20,4 @@ export const config: ConfigModuleOptions = {
       .valid('silent', 'error', 'warn', 'info', 'debug')
       .default('debug'),
   }),
-};
+}

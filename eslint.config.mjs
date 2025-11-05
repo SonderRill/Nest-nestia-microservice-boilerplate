@@ -1,59 +1,81 @@
-import typescriptEslintEslintPlugin from '@typescript-eslint/eslint-plugin';
-import simpleImportSort from 'eslint-plugin-simple-import-sort'
-import globals from 'globals';
+import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all,
-});
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import importPlugin from 'eslint-plugin-import';
+import prettierPlugin from 'eslint-plugin-prettier';
+import globals from 'globals';
 
 export default [
+    // 1. Игнор
     {
-        ignores: ['**/eslint.config.mjs'],
+        ignores: ['**/eslint.config.mjs', 'dist/', 'build/', 'node_modules/'],
     },
-    ...compat.extends(
-        'plugin:@typescript-eslint/recommended',
-        'plugin:prettier/recommended'
-    ),
+
+    // 3. TypeScript + импорты + prettier — всё в одном блоке
     {
-        plugins: {
-            '@typescript-eslint': typescriptEslintEslintPlugin,
-            'simple-import-sort': simpleImportSort
-        },
-
-
+        files: ['**/*.{ts,tsx}'],
         languageOptions: {
+            parser: tsParser,
+            parserOptions: {
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
+            },
             globals: {
                 ...globals.node,
                 ...globals.jest,
             },
-
-            parser: tsParser,
-            ecmaVersion: 'latest',
-            sourceType: 'module',
-
-            parserOptions: {
-                projectService: true,
-                sourceType: 'module',
-                "ecmaVersion": "latest"
+        },
+        plugins: {
+            '@typescript-eslint': tseslint,
+            import: importPlugin,
+            'simple-import-sort': simpleImportSort,
+            prettier: prettierPlugin,
+        },
+        settings: {
+            'import/resolver': {
+                'typescript': true, // ← использует eslint-import-resolver-typescript
             },
         },
-
         rules: {
+            // --- TypeScript ---
+            ...tseslint.configs.recommended.rules,
+            '@typescript-eslint/no-unused-vars': [
+                'warn',
+                {
+                    args: 'after-used',
+                    argsIgnorePattern: '^_',
+                    vars: 'all',
+                    varsIgnorePattern: '^_',
+                    caughtErrors: 'all',
+                    caughtErrorsIgnorePattern: '^_',
+                    destructuredArrayIgnorePattern: '^_',
+                },
+            ],
             '@typescript-eslint/interface-name-prefix': 'off',
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/explicit-module-boundary-types': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
-            "simple-import-sort/imports": "error",
-            "simple-import-sort/exports": "error",
+
+            // --- Импорты ---
+            'import/no-cycle': ['error', { maxDepth: Infinity, ignoreExternal: true }],
+            'import/no-self-import': 'error',
+            'simple-import-sort/imports': 'error',
+            'import/no-unresolved': 'error',
+            'simple-import-sort/exports': 'error',
+            'import/first': 'error',
+            'import/newline-after-import': 'error',
+            'import/no-duplicates': 'error',
+
+            // --- Prettier ---
+            'prettier/prettier': ['error', { semi: false }],
+        },
+    },
+
+    // 4. Специфичная конфигурация для nestia-api
+    {
+        files: ['**/nestia-api/**/*.ts'],
+        rules: {
+            '@typescript-eslint/no-namespace': 'off',
         },
     },
 ];

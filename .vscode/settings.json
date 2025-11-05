@@ -16,5 +16,16 @@
   },
   "[prisma]": {
     "editor.formatOnSave": true
-  }
+  },
+  "cSpell.words": [
+    "activatable",
+    "autoincrement",
+    "jexl",
+    "tgrid",
+    "typia",
+    "бекэнда",
+    "вебхуков",
+    "логгировать",
+    "фронтенда"
+  ]
 }

@@ -1,5 +1,5 @@
-import { tags } from 'typia';
+import { tags } from 'typia'
 
 export interface PowerResponse {
-  result: number & tags.Type<'float'>;
+  result: number & tags.Type<'float'>
 }

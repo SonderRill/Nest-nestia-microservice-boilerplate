@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { Counter, Gauge, Histogram, Summary } from 'prom-client';
+import { Injectable } from '@nestjs/common'
+import { Counter, Gauge, Histogram, Summary } from 'prom-client'
 
 @Injectable()
 export class MetricsService {
-  readonly customCounter: Counter<string>;
-  readonly customGauge: Gauge<string>;
-  readonly customHistogram: Histogram<string>;
-  readonly customSummary: Summary<string>;
+  readonly customCounter: Counter<string>
+  readonly customGauge: Gauge<string>
+  readonly customHistogram: Histogram<string>
+  readonly customSummary: Summary<string>
 
   constructor() {
     // Счётчик
@@ -14,14 +14,14 @@ export class MetricsService {
       name: 'custom_counter',
       help: 'Example of a custom counter',
       labelNames: ['method', 'status'],
-    });
+    })
 
     // Гейдж
     this.customGauge = new Gauge({
       name: 'custom_gauge',
       help: 'Example of a custom gauge',
       labelNames: ['method', 'status'],
-    });
+    })
 
     // Гистограмма
     this.customHistogram = new Histogram({
@@ -29,7 +29,7 @@ export class MetricsService {
       help: 'Example of a custom histogram',
       buckets: [0.1, 0.5, 1, 5, 10],
       labelNames: ['method', 'status'],
-    });
+    })
 
     // Сводка
     this.customSummary = new Summary({
@@ -37,6 +37,6 @@ export class MetricsService {
       help: 'Example of a custom summary',
       percentiles: [0.5, 0.9, 0.99],
       labelNames: ['method', 'status'],
-    });
+    })
   }
 }

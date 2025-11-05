@@ -19,13 +19,17 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
     "plugins": [
-      { "transform": "typia/lib/transform" },
+      {
+        "transform": "typia/lib/transform"
+      },
       {
         "transform": "@nestia/core/lib/transform",
-        "validate": "validate",
+        "validate": "assertEquals",
         "stringify": "assert"
       },
-      { "transform": "@nestia/sdk/lib/transform" }
+      {
+        "transform": "@nestia/sdk/lib/transform"
+      }
     ]
   }
 }

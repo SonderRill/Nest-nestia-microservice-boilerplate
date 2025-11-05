@@ -1,14 +1,14 @@
-import { TypedBody, TypedQuery } from '@nestia/core';
-import { Controller, Get, Logger, Post } from '@nestjs/common';
+import { TypedBody, TypedQuery } from '@nestia/core'
+import { Controller, Get, Logger, Post } from '@nestjs/common'
 
-import { HelloQuery } from './dto/hello.query';
-import { HelloResponse } from './dto/hello.response';
-import { PowerRequest } from './dto/power.request';
-import { PowerResponse } from './dto/power.response';
+import { HelloQuery } from './dto/hello.query'
+import { HelloResponse } from './dto/hello.response'
+import { PowerRequest } from './dto/power.request'
+import { PowerResponse } from './dto/power.response'
 
 @Controller()
 export class ExampleController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger()
 
   /**
    * It can be used to store multiline method<br/>
@@ -25,8 +25,8 @@ export class ExampleController {
   async getHello(
     @TypedQuery() { text, num }: HelloQuery,
   ): Promise<HelloResponse> {
-    this.logger.debug('log');
-    return { text: `${text || 'Hello'} ${num === void 0 ? 1 : num}` };
+    this.logger.debug('log')
+    return { text: `${text || 'Hello'} ${num === void 0 ? 1 : num}` }
   }
 
   /**
@@ -36,7 +36,7 @@ export class ExampleController {
    */
   @Post()
   async power(@TypedBody() body: PowerRequest): Promise<PowerResponse> {
-    const { number, degree } = body;
-    return { result: Math.pow(number, degree) };
+    const { number, degree } = body
+    return { result: Math.pow(number, degree) }
   }
 }

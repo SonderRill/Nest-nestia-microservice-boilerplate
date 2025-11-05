@@ -1,8 +1,12 @@
-import { INestiaConfig } from '@nestia/sdk';
+import { INestiaConfig } from '@nestia/sdk'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 export const OPENAPI_BASE: INestiaConfig.ISwaggerConfig = {
   output: 'dist/swagger.json',
-  openapi: '3.1',
+  openapi: '3.0',
+  beautify: true,
   info: {
     contact: {
       email: 'contact@nestjs.com',
@@ -17,13 +21,12 @@ export const OPENAPI_BASE: INestiaConfig.ISwaggerConfig = {
       identifier: 'MIT License',
     },
     summary: 'NestJS API summary',
-    termsOfService: 'https://ya.ru',
     title: 'NestJS API',
   },
   security: {
-    bearer: {
+    authApiKey: {
       type: 'apiKey',
-      name: 'Authorization',
+      name: 'x-auth-token',
       in: 'header',
     },
   },
@@ -33,4 +36,4 @@ export const OPENAPI_BASE: INestiaConfig.ISwaggerConfig = {
       description: 'Local Server',
     },
   ],
-};
+}

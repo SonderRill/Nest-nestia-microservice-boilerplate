@@ -1,8 +1,8 @@
-import { TypedBody } from '@nestia/core';
-import { Controller, Post } from '@nestjs/common';
-import { Post as PostNews } from '@prisma/client';
+import { TypedBody } from '@nestia/core'
+import { Controller, Post } from '@nestjs/common'
+import { Post as PostNews } from '@prisma/client'
 
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service'
 
 @Controller('post')
 export class ExamplePrimaController {
@@ -26,6 +26,6 @@ export class ExamplePrimaController {
         email,
         title,
       },
-    });
+    })
   }
 }

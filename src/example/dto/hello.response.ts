@@ -1,3 +1,3 @@
 export interface HelloResponse {
-  text: string;
+  text: string
 }
