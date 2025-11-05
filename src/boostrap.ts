@@ -17,7 +17,6 @@ export async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter({
     trustProxy: true,
     logger: loggerConfig,
-    http2: true,
   })
 
   fastifyAdapter.getInstance().addHook('onResponse', (request, reply, done) => {
