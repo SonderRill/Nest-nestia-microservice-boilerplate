@@ -51,10 +51,10 @@
   },
   "dependencies": {
     "@fastify/static": "^8.3.0",
-    "@nestia/core": "^8.1.0",
-    "@nestia/e2e": "^8.1.0",
-    "@nestia/fetcher": "^8.1.0",
-    "@nestia/sdk": "^8.1.0",
+    "@nestia/core": "^9.0.1",
+    "@nestia/e2e": "^9.0.1",
+    "@nestia/fetcher": "^9.0.1",
+    "@nestia/sdk": "^9.0.1",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.8",
     "@nestjs/config": "^4.0.2",
@@ -74,11 +74,11 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "ts-patch": "^3.3.0",
-    "typia": "^9.7.2"
+    "typia": "^10.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@nestia/benchmark": "^8.1.0",
+    "@nestia/benchmark": "^9.0.1",
     "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.8",
@@ -97,7 +97,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.5.0",
     "jest": "^30.2.0",
-    "nestia": "^8.1.0",
+    "nestia": "^9.0.1",
     "prettier": "^3.6.2",
     "prisma": "^6.19.0",
     "source-map-support": "^0.5.21",
