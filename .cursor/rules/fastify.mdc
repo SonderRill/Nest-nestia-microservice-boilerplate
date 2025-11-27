@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+# Fastify
+
+Это NestJS приложение использует **Fastify**, а не Express:
+
+- Учитывать особенности Fastify при работе с запросами и ответами
+- Использовать типы из `fastify` вместо `express`

@@ -1,0 +1,13 @@
+---
+alwaysApply: true
+---
+
+# Nestia и декораторы
+
+В проекте используется **nestia**, поэтому в контроллерах:
+
+- Вместо `@Query` из `@nestjs/common` использовать `@TypedQuery` из `@nestia/core`
+- Вместо `@Body` использовать `TypedBody` из `@nestia/core`
+- **НЕ использовать** `@TypedRoute` из `@nestia/core`
+- Для роутов использовать стандартные декораторы из `@nestjs/common`: `@Get`, `@Post`, `@Put`, `@Delete`, `@Patch`
+- Вместо `@Param` используй `@TypedParam`

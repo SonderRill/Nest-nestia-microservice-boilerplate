@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+В примерах команд и в командной строке всегда используй `docker compose` вместо `docker-compose`

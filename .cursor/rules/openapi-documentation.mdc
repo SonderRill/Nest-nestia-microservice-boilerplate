@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+---
+
+# OpenAPI документация
+
+Над каждым методом в контроллерах обязательно должно быть оформление для OpenAPI:
+
+- Использовать JSDoc комментарии с декораторами `@tag` и `@summary`
+- `@tag` - группа/категория эндпоинта (например, "Project", "Translation")
+- `@summary` - краткое описание действия эндпоинта
+
+Пример:
+
+```typescript
+/**
+ * @tag Project
+ * @summary Get project by id
+ */
+@Get(':id')
+async getProject(@TypedParam('id') id: number) {
+  // ...
+}
+```

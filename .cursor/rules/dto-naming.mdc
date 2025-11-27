@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+
+# Соглашения по именованию DTO
+
+Соглашения по именованию интерфейсов DTO:
+
+- **Body DTO**: приставка `Create` + окончание `BodyDto` (например, `CreateProjectBodyDto`)
+- **Query DTO для GET**: приставка `Get` + окончание `QueryDto` (например, `GetProjectQueryDto`)
+- **Output DTO**: окончание `OutputDto` (например, `ProjectOutputDto`)

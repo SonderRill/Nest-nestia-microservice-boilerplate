@@ -1,0 +1,35 @@
+---
+alwaysApply: true
+---
+
+# Вспомогательные типы для списков
+
+Для эндпоинтов, которые возвращают списки данных, обязательно использовать вспомогательные типы:
+
+- **Query параметры**: `GetManyParamsDto<OrderBy>` должен использоваться **внутри** отдельной QueryDto (согласно правилам именования DTO), а не напрямую в контроллере. QueryDto должен расширять `GetManyParamsDto<OrderBy>` и может добавлять дополнительные поля для фильтрации
+- **Response**: использовать `GetManyResponseDto<T>` из `src/common/dto/get-many-response.dto.ts` **напрямую** в `Promise<GetManyResponseDto<T>>` для ответа со списком данных и мета-информацией о пагинации
+
+Пример:
+
+```typescript
+// dto/get-project-query.dto.ts
+import { GetManyParamsDto } from '../../common/dto/get-many-params.dto'
+import { tags } from 'typia'
+
+export interface GetProjectQueryDto extends GetManyParamsDto<'title' | 'createdAt'> {
+  /**
+   * Search by title
+   */
+  search?: string & tags.MaxLength<100>
+}
+
+// controller
+import { GetManyResponseDto } from '../common/dto/get-many-response.dto'
+
+@Get()
+async findAll(
+  @TypedQuery() query: GetProjectQueryDto,
+): Promise<GetManyResponseDto<ProjectOutputDto>> {
+  return this.projectService.findAll(userId, query)
+}
+```
