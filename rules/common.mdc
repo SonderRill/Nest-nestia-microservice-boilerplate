@@ -1,0 +1,170 @@
+---
+alwaysApply: true
+---
+
+# Правила разработки проекта
+
+## Nestia и декораторы
+
+1. В проекте используется **nestia**, поэтому в контроллерах:
+   - Вместо `@Query` из `@nestjs/common` использовать `@TypedQuery` из `@nestia/core`
+   - Вместо `@Body` использовать `TypedBody` из `@nestia/core`
+   - **НЕ использовать** `@TypedRoute` из `@nestia/core`
+   - Для роутов использовать стандартные декораторы из `@nestjs/common`: `@Get`, `@Post`, `@Put`, `@Delete`, `@Patch`
+   - Вместо `@Param` используй `@TypedParam`
+
+## OpenAPI документация
+
+2. Над каждым методом в контроллерах обязательно должно быть оформление для OpenAPI:
+   - Использовать JSDoc комментарии с декораторами `@tag` и `@summary`
+   - `@tag` - группа/категория эндпоинта (например, "Project", "Translation")
+   - `@summary` - краткое описание действия эндпоинта
+
+   Пример:
+
+   ```typescript
+   /**
+    * @tag Project
+    * @summary Get project by id
+    */
+   @Get(':id')
+   async getProject(@TypedParam('id') id: number) {
+     // ...
+   }
+   ```
+
+## Валидация с Typia
+
+3. В проекте используется **typia** для валидации:
+   - DTO для входящих данных оформлять в виде `interface` или `type` с использованием валидации из `typia`
+   - Использовать декораторы типов из `typia` для валидации (например, `typia.tags.Format`, `typia.tags.MinLength`, и т.д.)
+
+## Fastify
+
+4. Это NestJS приложение использует **Fastify**, а не Express:
+   - Учитывать особенности Fastify при работе с запросами и ответами
+   - Использовать типы из `fastify` вместо `express`
+
+## Соглашения по именованию DTO
+
+5. Соглашения по именованию интерфейсов DTO:
+   - **Body DTO**: приставка `Create` + окончание `BodyDto` (например, `CreateProjectBodyDto`)
+   - **Query DTO для GET**: приставка `Get` + окончание `QueryDto` (например, `GetProjectQueryDto`)
+   - **Output DTO**: окончание `OutputDto` (например, `ProjectOutputDto`)
+   - Если DTO описывает сущность из Prisma, использовать `extends Pick<TypeFromPrisma, 'field1' | 'field2'>` и перечислять поля из типов, сгенерированных в `@prisma/client`
+
+<!-- ## Mappers
+
+6. Для всех методов сервиса, которые возвращают данные, обязательно использовать mappers:
+   - Создавать папку `mappers` в каждом модуле (например, `src/project/mappers/`)
+   - Создавать отдельный маппер для каждого метода сервиса, который возвращает данные
+   - В мапперах явно перечислять все поля возвращаемых данных из Prisma моделей в OutputDto
+   - Для методов, возвращающих списки, в мапперах также заполнять мета-информацию о пагинации
+   - Мапперы должны быть чистыми функциями (pure functions) без побочных эффектов
+
+   Пример:
+
+   ```typescript
+   // mappers/project.mapper.ts
+   import { Project } from '@prisma/client'
+   import { GetManyResponseDto } from '../../common/dto/get-many-response.dto'
+   import { ProjectOutputDto } from '../dto/project-output.dto'
+
+   export class ProjectMapper {
+     static toOutputDto(project: Project): ProjectOutputDto {
+       return {
+         id: project.id,
+         title: project.title,
+         context_prompt: project.context_prompt,
+         owner_id: project.owner_id,
+         deepseek_token: project.deepseek_token,
+         updatedAt: project.updatedAt,
+         createdAt: project.createdAt,
+       }
+     }
+
+     static toGetManyResponseDto<T>(
+       data: T[],
+       total: number,
+       page: number,
+       limit: number,
+     ): GetManyResponseDto<T> {
+       return {
+         data,
+         meta: {
+           pagination: {
+             page,
+             pageSize: limit,
+             pageCount: Math.ceil(total / limit),
+             total,
+           },
+         },
+       }
+     }
+   }
+
+   // service
+   import { ProjectMapper } from './mappers/project.mapper'
+
+   async findOne(id: number, userId: number): Promise<Project> {
+     const project = await this.prisma.project.findFirst({...})
+     if (!project) throw new NotFoundException(...)
+     return project
+   }
+
+   async findAll(...): Promise<{ data: Project[]; total: number; page: number; limit: number }> {
+     const [data, total] = await Promise.all([...])
+     return { data, total, page, limit }
+   }
+
+   // controller
+   import { ProjectMapper } from './mappers/project.mapper'
+
+   @Get(':id')
+   async findOne(@TypedParam('id') id: string): Promise<ProjectOutputDto> {
+     const project = await this.projectService.findOne(Number(id), userId)
+     return ProjectMapper.toOutputDto(project)
+   }
+
+   @Get()
+   async findAll(@TypedQuery() query: GetProjectQueryDto): Promise<GetManyResponseDto<ProjectOutputDto>> {
+     const { data, total, page, limit } = await this.projectService.findAll(userId, query)
+     return ProjectMapper.toGetManyResponseDto(
+       data.map(ProjectMapper.toOutputDto),
+       total,
+       page,
+       limit,
+     )
+   }
+   ``` -->
+
+## Вспомогательные типы для списков
+
+7. Для эндпоинтов, которые возвращают списки данных, обязательно использовать вспомогательные типы:
+   - **Query параметры**: `GetManyParamsDto<OrderBy>` должен использоваться **внутри** отдельной QueryDto (согласно правилу 5), а не напрямую в контроллере. QueryDto должен расширять `GetManyParamsDto<OrderBy>` и может добавлять дополнительные поля для фильтрации
+   - **Response**: использовать `GetManyResponseDto<T>` из `src/common/dto/get-many-response.dto.ts` **напрямую** в `Promise<GetManyResponseDto<T>>` для ответа со списком данных и мета-информацией о пагинации
+
+   Пример:
+
+   ```typescript
+   // dto/get-project-query.dto.ts
+   import { GetManyParamsDto } from '../../common/dto/get-many-params.dto'
+   import { tags } from 'typia'
+
+   export interface GetProjectQueryDto extends GetManyParamsDto<'title' | 'createdAt'> {
+     /**
+      * Search by title
+      */
+     search?: string & tags.MaxLength<100>
+   }
+
+   // controller
+   import { GetManyResponseDto } from '../common/dto/get-many-response.dto'
+
+   @Get()
+   async findAll(
+     @TypedQuery() query: GetProjectQueryDto,
+   ): Promise<GetManyResponseDto<ProjectOutputDto>> {
+     return this.projectService.findAll(userId, query)
+   }
+   ```
