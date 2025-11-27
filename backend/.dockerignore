@@ -1,0 +1,36 @@
+# Игнорируем системные и IDE-файлы
+.git
+.gitignore
+.DS_Store
+*.swp
+.idea
+.vscode
+
+# Игнорируем зависимости
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+.pnpm-store
+.cache
+
+# Игнорируем тесты и документацию
+tests/
+coverage/
+*.test.js
+*.spec.js
+*.md
+
+# Игнорируем локальные окружения и логи
+.env
+.env.*         # .env.production, .env.local и т.п.
+*.log
+logs/
+uploads/
+.tmp/
+
+# Игнорируем артефакты сборки (если они есть локально, но не нужны в контейнере)
+build/
+dist/
+public/

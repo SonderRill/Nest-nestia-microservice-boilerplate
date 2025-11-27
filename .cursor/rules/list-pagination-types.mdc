@@ -1,5 +1,6 @@
 ---
-alwaysApply: true
+globs: backend/src/**/*.ts
+alwaysApply: false
 ---
 
 # Вспомогательные типы для списков

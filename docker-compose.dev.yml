@@ -1,0 +1,123 @@
+services:
+  # База данных (та же что и в production)
+  db:
+    image: postgres:15
+    container_name: app-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-myuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
+      POSTGRES_DB: ${POSTGRES_DB:-mydatabase}
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5446}:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-myuser} -d ${POSTGRES_DB:-mydatabase}",
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    networks:
+      - app-network-dev
+
+  # Backend API в режиме разработки
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: app-backend-dev
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER:-myuser}:${POSTGRES_PASSWORD:-mypassword}@db:5432/${POSTGRES_DB:-mydatabase}
+      - HOST=0.0.0.0
+      - PORT=3000
+      - EDITOR_PORT=3000
+      - NODE_ENV=development
+    volumes:
+      # Монтируем исходный код для hot-reload (read-write для сохранения изменений)
+      - ./backend/src:/usr/src/app/src
+      - ./backend/prisma:/usr/src/app/prisma
+      - ./backend/nestia-api:/usr/src/app/nestia-api
+      - ./backend/nest-cli.json:/usr/src/app/nest-cli.json
+      - ./backend/tsconfig.json:/usr/src/app/tsconfig.json
+      - ./backend/tsconfig.build.json:/usr/src/app/tsconfig.build.json
+      # Исключаем только node_modules - используем из контейнера
+      # dist должен быть доступен для записи, чтобы NestJS мог его очищать и пересоздавать
+      - /usr/src/app/node_modules
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app-network-dev
+    # Выполняем миграции и перегенерируем Prisma Client перед запуском приложения
+    entrypoint: >
+      sh -c "
+        echo 'Generating Prisma Client...' &&
+        npm run prisma:generate &&
+        echo 'Running Prisma migrations...' &&
+        npm run prisma:deploy &&
+        echo 'Starting editor in dev mode...' &&
+        npm run start:dev
+      "
+
+  # Frontend в режиме разработки
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: app-frontend-dev
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost/api
+      - WATCHPACK_POLLING=true
+    volumes:
+      # Монтируем исходный код для hot-reload (read-write для сохранения изменений)
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/next.config.mjs:/app/next.config.mjs
+      - ./frontend/tsconfig.json:/app/tsconfig.json
+      - ./frontend/postcss.config.mjs:/app/postcss.config.mjs
+      - ./frontend/package.json:/app/package.json
+      - ./frontend/package-lock.json:/app/package-lock.json
+      # Исключаем node_modules и .next - используем из контейнера
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "${FRONTEND_PORT:-3001}:3001"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network-dev
+    command: npm run dev:docker
+
+  # Nginx Reverse Proxy (та же конфигурация)
+  nginx:
+    image: nginx:alpine
+    container_name: app-nginx-dev
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network-dev
+
+volumes:
+  postgres-data-dev:
+
+networks:
+  app-network-dev:
+    driver: bridge
