@@ -25,3 +25,4 @@ logs/
 tmp/
 temp/
 
+node_modules/
