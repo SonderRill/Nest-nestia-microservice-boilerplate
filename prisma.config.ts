@@ -2,16 +2,14 @@ import 'dotenv/config'
 
 import path from 'node:path'
 
-import type { PrismaConfig } from 'prisma'
+import { defineConfig, env } from 'prisma/config'
 
-export default {
+export default defineConfig({
   schema: path.join('prisma', 'schema.prisma'),
-  experimental: {
-    // externalTables: true,
-  },
-  tables: {},
-  enums: {},
   migrations: {
-    // setup the users table for the shadow database
+    path: 'prisma/migrations',
   },
-} satisfies PrismaConfig
+  datasource: {
+    url: env('DATABASE_URL'),
+  },
+})

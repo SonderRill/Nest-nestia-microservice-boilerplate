@@ -1,7 +1,7 @@
 import { TypedBody } from '@nestia/core'
 import { Controller, Post } from '@nestjs/common'
-import { Post as PostNews } from '@prisma/client'
 
+import { PostModel } from '../../prisma/generated/prisma/models/Post'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Controller('post')
@@ -18,8 +18,8 @@ export class ExamplePrimaController {
   @Post()
   async createPost(
     @TypedBody()
-    { body, email, title }: Pick<PostNews, 'body' | 'email' | 'title'>,
-  ): Promise<PostNews> {
+    { body, email, title }: Pick<PostModel, 'body' | 'email' | 'title'>,
+  ): Promise<PostModel> {
     return this.prismaService.post.create({
       data: {
         body,
