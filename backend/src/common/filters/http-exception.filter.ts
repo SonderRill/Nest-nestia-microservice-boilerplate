@@ -5,8 +5,10 @@ import { TypeGuardError } from 'typia'
 
 import { sanitizeHeaders } from '../utils'
 
-export interface TypiaBadRequestException
-  extends Omit<TypeGuardError, 'method'> {
+export interface TypiaBadRequestException extends Omit<
+  TypeGuardError,
+  'method'
+> {
   statusCode: number
 }
 

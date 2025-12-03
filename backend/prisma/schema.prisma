@@ -4,12 +4,12 @@
 // Typia for prisma https://typia.io/docs/utilization/prisma/ 
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "./generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Post {

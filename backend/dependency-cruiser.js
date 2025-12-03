@@ -27,6 +27,14 @@ module.exports = {
     doNotFollow: {
       path: 'node_modules',
     },
+    exclude: {
+      path: [
+        'prisma/generated',
+        'node_modules',
+        'dist',
+        'build',
+      ],
+    },
     tsPreCompilationDeps: true,
     tsConfig: {
       fileName: './tsconfig.json',
