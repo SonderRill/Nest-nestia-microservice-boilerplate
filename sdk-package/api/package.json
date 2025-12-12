@@ -26,13 +26,13 @@
     "package.json"
   ],
   "devDependencies": {
-    "rimraf": "^6.1.0",
+    "rimraf": "^6.1.2",
     "ts-patch": "^3.3.0",
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "@nestia/fetcher": "^9.0.1",
+    "@nestia/fetcher": "^9.1.1",
     "tgrid": "^1.2.0",
-    "typia": "^10.0.1"
+    "typia": "^10.1.0"
   }
 }

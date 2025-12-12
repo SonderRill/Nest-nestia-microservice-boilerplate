@@ -1,7 +1,7 @@
 import { TypedBody } from '@nestia/core'
 import { Controller, Post } from '@nestjs/common'
 
-import { PostModel } from '../../prisma/generated/prisma/models/Post'
+import { PostModel } from '../../prisma/generated/prisma/models'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Controller('post')
