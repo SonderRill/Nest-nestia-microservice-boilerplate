@@ -26,3 +26,5 @@ tmp/
 temp/
 
 node_modules/
+dist/
+sdk-package
