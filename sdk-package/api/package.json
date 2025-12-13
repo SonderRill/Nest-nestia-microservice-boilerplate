@@ -8,17 +8,17 @@
     "access": "public"
   },
   "scripts": {
-    "build": "npm run build:sdk && npm run compile && npm run format",
-    "build:hard": "npm run build:hard:sdk && npm run compile && npm run format",
+    "build": "pnpm run build:sdk && pnpm run compile && pnpm run format",
+    "build:hard": "pnpm run build:hard:sdk && pnpm run compile && pnpm run format",
     "format": "prettier --write \"../../nestia-api/**/*.ts\" && eslint --fix \"../../nestia-api/**/*.ts\"",
-    "build:sdk": "rimraf ../../nestia-api/functional && cd ../.. && npx nestia sdk && cd sdk-package/api",
-    "build:hard:sdk": "rimraf ../../nestia-api/functional && find ../../nestia-api/structures -name '*.ts' ! -name 'NestListener.ts' ! -name 'NextListener.ts' ! -name 'NextListenerHeader.ts' -delete && cd ../.. && npx nestia sdk && cd sdk-package/api",
+    "build:sdk": "rimraf ../../nestia-api/functional && cd ../.. && pnpm dlx nestia sdk && cd sdk-package/api",
+    "build:hard:sdk": "rimraf ../../nestia-api/functional && find ../../nestia-api/structures -name '*.ts' ! -name 'NestListener.ts' ! -name 'RemoteListener.ts' -delete && cd ../.. && pnpm dlx nestia sdk && cd sdk-package/api",
     "compile": "rimraf lib && tsc",
-    "deploy": "npm run build && npm run format && npm version minor && npm publish",
-    "deploy:major": "npm run build && npm run format && npm version major && npm publish",
+    "deploy": "pnpm run build && pnpm run format && pnpm version minor && pnpm publish",
+    "deploy:major": "pnpm run build && pnpm run format && pnpm version major && pnpm publish",
     "prepare": "ts-patch install",
-    "update": "npx npm-check-updates",
-    "update:run": "npx npm-check-updates -u && npm install"
+    "update": "pnpm dlx npm-check-updates",
+    "update:run": "pnpm dlx npm-check-updates -u && pnpm install"
   },
   "author": "Fuck you daddy",
   "files": [

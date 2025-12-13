@@ -9,6 +9,7 @@ import { ExamplePrismaModule } from './example-prisma/example-prisma.module'
 import { HealthModule } from './health/health.module'
 import { MetricsModule } from './metrics/metrics.module'
 import { PrismaModule } from './prisma/prisma.module'
+import { WebSocketRpcModule } from './websocket-rpc'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PrismaModule } from './prisma/prisma.module'
     HealthModule,
     ExampleModule,
     ExamplePrismaModule,
+    WebSocketRpcModule,
   ],
   providers: [
     {

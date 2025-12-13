@@ -18,10 +18,10 @@ if (config.get('LOKI_URL')) {
     level: LOG_LEVEL,
     options: {
       translateTime: 'dd/mm/yyyy, HH:MM:ss Z',
-      batching: true, // Должны ли журналы отправляться в пакетном режиме. По умолчанию true.
-      interval: 5, // Интервал отправки пакетных журналов в секундах. По умолчанию 5.
+      batching: true, // Whether logs should be sent in batch mode. Default is true.
+      interval: 5, // Interval for sending batch logs in seconds. Default is 5.
       labels: {
-        // Дополнительные метки, которые будут добавлены во все журналы Loki
+        // Additional labels that will be added to all Loki logs
         app: packageJson.name,
         env: config.get('NODE_ENV'),
       },

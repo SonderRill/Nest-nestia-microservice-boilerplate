@@ -9,21 +9,21 @@ export class MetricsService {
   readonly customSummary: Summary<string>
 
   constructor() {
-    // Счётчик
+    // Counter
     this.customCounter = new Counter({
       name: 'custom_counter',
       help: 'Example of a custom counter',
       labelNames: ['method', 'status'],
     })
 
-    // Гейдж
+    // Gauge
     this.customGauge = new Gauge({
       name: 'custom_gauge',
       help: 'Example of a custom gauge',
       labelNames: ['method', 'status'],
     })
 
-    // Гистограмма
+    // Histogram
     this.customHistogram = new Histogram({
       name: 'custom_histogram',
       help: 'Example of a custom histogram',
@@ -31,7 +31,7 @@ export class MetricsService {
       labelNames: ['method', 'status'],
     })
 
-    // Сводка
+    // Summary
     this.customSummary = new Summary({
       name: 'custom_summary',
       help: 'Example of a custom summary',

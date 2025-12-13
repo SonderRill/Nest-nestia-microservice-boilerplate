@@ -58,6 +58,11 @@ export async function bootstrap() {
   const host = process.env.HOST ?? '127.0.0.1'
   await app.listen(port, host)
 
+  // Send ready message to master process
+  if (process.send) {
+    process.send('ready')
+  }
+
   if (process.env.ENABLE_CONSOLE_LOGGING !== 'true') {
     console.log(
       'Nest application successfully started on ' +

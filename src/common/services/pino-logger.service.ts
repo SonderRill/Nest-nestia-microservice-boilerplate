@@ -108,7 +108,7 @@ export class PinoLogger extends ConsoleLogger {
 
   //
   /**
-   * пример логов - [03/08/2021, 21:02:01 UTC] INFO (1234): [BonusExpirySchedulerService] exampleText
+   * Log example - [03/08/2021, 21:02:01 UTC] INFO (1234): [BonusExpirySchedulerService] exampleText
    * 
    * [03/08/2021, 21:01:32 UTC] INFO (1234): [BonusExpirySchedulerService]
      example: 32
