@@ -1,3 +1,5 @@
+import { availableParallelism } from 'node:os'
+
 import { ConfigModuleOptions } from '@nestjs/config'
 import * as Joi from 'joi'
 
@@ -7,7 +9,9 @@ export const config: ConfigModuleOptions = {
     NODE_ENV: Joi.string()
       .valid('development', 'production')
       .default('development'),
-    PORT: Joi.number().port().default(3000),
+    PORT: Joi.number().port().default(7000),
+    HOST: Joi.string().default('0.0.0.0'),
+    CLUSTER_WORKERS: Joi.number().default(Math.max(1, availableParallelism())),
     LOKI_URL: Joi.string().uri().allow(''),
     LOKI_USERNAME: Joi.string().allow(''),
     LOKI_PASSWORD: Joi.string().allow(''),

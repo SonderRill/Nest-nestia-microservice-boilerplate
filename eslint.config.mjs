@@ -6,12 +6,12 @@ import prettierPlugin from 'eslint-plugin-prettier';
 import globals from 'globals';
 
 export default [
-    // 1. Игнор
+    // 1. Ignore
     {
         ignores: ['**/eslint.config.mjs', 'dist/', 'build/', 'node_modules/'],
     },
 
-    // 3. TypeScript + импорты + prettier — всё в одном блоке
+    // 3. TypeScript + imports + prettier — all in one block
     {
         files: ['**/*.{ts,tsx}'],
         languageOptions: {
@@ -33,7 +33,7 @@ export default [
         },
         settings: {
             'import/resolver': {
-                'typescript': true, // ← использует eslint-import-resolver-typescript
+                'typescript': true, // ← uses eslint-import-resolver-typescript
             },
         },
         rules: {
@@ -56,7 +56,7 @@ export default [
             '@typescript-eslint/explicit-module-boundary-types': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
 
-            // --- Импорты ---
+            // --- Imports ---
             'import/no-cycle': ['error', { maxDepth: Infinity, ignoreExternal: true }],
             'import/no-self-import': 'error',
             'simple-import-sort/imports': 'error',
@@ -71,7 +71,7 @@ export default [
         },
     },
 
-    // 4. Специфичная конфигурация для nestia-api
+    // 4. Specific configuration for nestia-api
     {
         files: ['**/nestia-api/**/*.ts'],
         rules: {

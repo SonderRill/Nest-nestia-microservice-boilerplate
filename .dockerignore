@@ -5,6 +5,7 @@
 *.swp
 .idea
 .vscode
+Dockerfile
 
 # Игнорируем зависимости
 node_modules

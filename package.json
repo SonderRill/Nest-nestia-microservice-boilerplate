@@ -42,7 +42,7 @@
     "bench:post": "h2load --h1 -n 300000 -c 50 -m 30 -d test/bench.body.json -H 'Content-Type: application/json' \"http://localhost:7000/\"",
     "bench:get:cluster": "h2load --h1 -n 5000000 -c 50 -m 30 -t 5 \"http://localhost:7000/?text=123&num=0\"",
     "bench:post:cluster": "h2load --h1 -n 5000000 -c 50 -m 30 -t 5 -d test/bench.body.json -H 'Content-Type: application/json' \"http://localhost:7000/\"",
-    "postinstall": "pnpm run prisma:generate && prettier --write \"prisma/generated/**/*.ts\"",
+    "postinstall": "[ -n \"$CI\" ] || (pnpm run prisma:generate && prettier --write \"prisma/generated/**/*.ts\")",
     "update": "pnpm dlx npm-check-updates",
     "update:run": "pnpm dlx npm-check-updates -u && pnpm install",
     "sdk:build": "cd sdk-package/api && pnpm run build",

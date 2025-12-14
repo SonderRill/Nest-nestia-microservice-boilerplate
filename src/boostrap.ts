@@ -1,4 +1,5 @@
 import { NestiaSwaggerComposer } from '@nestia/sdk'
+import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import {
   FastifyAdapter,
@@ -54,8 +55,30 @@ export async function bootstrap() {
     endpoint: '/metrics',
   })
 
-  const port = process.env.PORT ?? 3000
-  const host = process.env.HOST ?? '127.0.0.1'
+  const configService = app.get(ConfigService)
+  const port = configService.get<number>('PORT', 7000)
+  const host = configService.get<string>('HOST', '127.0.0.1')
+
+  // Graceful shutdown
+  const shutdown = async (signal: string) => {
+    fastifyLogger.info(`Received ${signal}, shutting down gracefully...`)
+    await app.close()
+    process.exit(0)
+  }
+
+  process.on('SIGTERM', () => {
+    shutdown('SIGTERM').catch((error) => {
+      fastifyLogger.error('Error during shutdown:', error)
+      process.exit(1)
+    })
+  })
+  process.on('SIGINT', () => {
+    shutdown('SIGINT').catch((error) => {
+      fastifyLogger.error('Error during shutdown:', error)
+      process.exit(1)
+    })
+  })
+
   await app.listen(port, host)
 
   // Send ready message to master process
@@ -63,7 +86,18 @@ export async function bootstrap() {
     process.send('ready')
   }
 
-  if (process.env.ENABLE_CONSOLE_LOGGING !== 'true') {
+  const enableConsoleLogging = configService.get<boolean>(
+    'ENABLE_CONSOLE_LOGGING',
+    true,
+  )
+  fastifyLogger.info(
+    'Application started on ' +
+      host +
+      ':' +
+      port +
+      '.Access to the documentation is available on /api',
+  )
+  if (!enableConsoleLogging) {
     console.log(
       'Nest application successfully started on ' +
         host +

@@ -5,7 +5,7 @@ module.exports = {
       name: 'no-circular',
       severity: 'error',
       comment:
-        'Циклические зависимости могут вызвать проблемы с инициализацией модулей и DI в NestJS',
+        'Circular dependencies can cause problems with module initialization and DI in NestJS',
       from: {},
       to: {
         circular: true,
@@ -15,7 +15,7 @@ module.exports = {
       name: 'no-circular-via-barrel',
       severity: 'warn',
       comment:
-        'Импорт через barrel-файлы (index.ts) может скрывать циклические зависимости',
+        'Import through barrel files (index.ts) can hide circular dependencies',
       from: {},
       to: {
         path: 'index\\.(ts|js)$',

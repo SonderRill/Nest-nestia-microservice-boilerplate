@@ -1,36 +1,58 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '7000:7000'
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    # Read-only filesystem for security (optional, can be removed if issues occur)
+    read_only: true
+    # Temporary filesystem in RAM for /tmp (required when read_only: true)
+    tmpfs:
+      - /tmp
+    networks:
+      - app-network
+
   db:
-    image: postgres:latest
-    container_name: postgres_container
+    image: postgres:16-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: mydatabase
     volumes:
-      - 'postgres-data:/var/lib/postgresql/data' # монтируем собранные данные в Docker volume
+      - 'postgres-data:/var/lib/postgresql/data' # mount collected data to Docker volume
     ports:
       - '5444:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U myuser -d mydatabase']
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-      - monitoring
+      - app-network
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus
     volumes:
-      - './prometheus.yml:/etc/prometheus/prometheus.yml' # монтируем конфигурационный файл
-      - 'prometheus-data:/prometheus' # монтируем собранные данные в Docker volume
+      - './prometheus.yaml:/etc/prometheus/prometheus.yml' # mount configuration file
+      - 'prometheus-data:/prometheus' # mount collected data to Docker volume
     ports:
       - '9090:9090'
     restart: unless-stopped
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     networks:
-      - monitoring
+      - app-network
 
   loki:
     image: grafana/loki:latest
-    container_name: loki
     command: -config.file=/etc/loki/local-config.yaml
     ports:
       - '3100:3100'
@@ -38,11 +60,10 @@ services:
     volumes:
       - 'loki-data:/loki'
     networks:
-      - monitoring
+      - app-network
 
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana
     depends_on:
       - prometheus
       - loki
@@ -54,12 +75,12 @@ services:
       - sh
       - -euc
       - |
-        # Директории для provisioning
+        # Directories for provisioning
         mkdir -p /etc/grafana/provisioning/datasources
         mkdir -p /etc/grafana/provisioning/dashboards
         mkdir -p /var/lib/grafana/dashboards
 
-        # Конфигурация datasources
+        # Datasources configuration
         cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
         apiVersion: 1
         datasources:
@@ -81,7 +102,7 @@ services:
           uid: DS_PROMETHEUS
         EOF
 
-        # Конфигурация dashboards
+        # Dashboards configuration
         cat <<EOF > /etc/grafana/provisioning/dashboards/dashboard.yaml
         apiVersion: 1
         providers:
@@ -102,7 +123,7 @@ services:
       - '3000:3000'
     restart: unless-stopped
     networks:
-      - monitoring
+      - app-network
 
 volumes:
   postgres-data:
@@ -110,5 +131,5 @@ volumes:
   loki-data:
 
 networks:
-  monitoring:
+  app-network:
     driver: bridge
