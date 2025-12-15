@@ -7,12 +7,19 @@
   "publishConfig": {
     "access": "public"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestia/fetcher",
+      "tgrid",
+      "typia"
+    ]
+  },
   "scripts": {
     "build": "pnpm run build:sdk && pnpm run compile && pnpm run format",
     "build:hard": "pnpm run build:hard:sdk && pnpm run compile && pnpm run format",
     "format": "prettier --write \"../../nestia-api/**/*.ts\" && eslint --fix \"../../nestia-api/**/*.ts\"",
-    "build:sdk": "rimraf ../../nestia-api/functional && cd ../.. && pnpm dlx nestia sdk && cd sdk-package/api",
-    "build:hard:sdk": "rimraf ../../nestia-api/functional && find ../../nestia-api/structures -name '*.ts' ! -name 'NestListener.ts' ! -name 'RemoteListener.ts' -delete && cd ../.. && pnpm dlx nestia sdk && cd sdk-package/api",
+    "build:sdk": "rimraf ../../nestia-api/functional && cd ../.. && pnpm exec nestia sdk && cd sdk-package/api",
+    "build:hard:sdk": "rimraf ../../nestia-api/functional && find ../../nestia-api/structures -name '*.ts' ! -name 'NestListener.ts' ! -name 'RemoteListener.ts' -delete && cd ../.. && pnpm exec nestia sdk && cd sdk-package/api",
     "compile": "rimraf lib && tsc",
     "deploy": "pnpm run build && pnpm run format && pnpm version minor && pnpm publish",
     "deploy:major": "pnpm run build && pnpm run format && pnpm version major && pnpm publish",

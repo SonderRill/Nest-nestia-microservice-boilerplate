@@ -14,6 +14,15 @@
     "pnpm": ">=8.0.0"
   },
   "packageManager": "pnpm@10.25.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/engines",
+      "@scarf/scarf",
+      "prisma",
+      "unrs-resolver"
+    ]
+  },
   "scripts": {
     "build": "nest build",
     "build:swagger": "pnpm dlx nestia swagger",
@@ -30,6 +39,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:nestia": "pnpm exec nestia e2e",
     "prisma:format": "prisma format",
     "prisma:generate": "prisma generate",
     "prisma:create": "prisma migrate dev --create-only",
