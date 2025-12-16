@@ -21,7 +21,7 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap({
         error: () => {
-          // Расширение автоматического лога ответа во время ошибки либо в dev режиме
+          // Extending automatic response logging during error in dev mode
           if (shouldLogDetails) {
             log.setBindings({
               body: request.body,
