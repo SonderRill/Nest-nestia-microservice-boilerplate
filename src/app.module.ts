@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { APP_FILTER } from '@nestjs/core'
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 
-import { HttpExceptionFilter } from './common/filters/http-exception.filter'
+import { HttpExceptionFilter } from './common/filters'
+import { LoggingInterceptor } from './common/interceptors'
 import { config } from './configs/nest-config'
 import { ExampleModule } from './example/example.module'
 import { ExamplePrismaModule } from './example-prisma/example-prisma.module'
@@ -25,6 +26,10 @@ import { WebSocketRpcModule } from './websocket-rpc'
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
   ],
 })

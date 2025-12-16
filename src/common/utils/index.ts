@@ -1,1 +1,1 @@
-export * from './sanitize-headers'
+export * from './sanitize-request-data'

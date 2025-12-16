@@ -3,7 +3,7 @@ import { BaseExceptionFilter } from '@nestjs/core'
 import { FastifyRequest } from 'fastify'
 import { TypeGuardError } from 'typia'
 
-import { sanitizeHeaders } from '../utils'
+import { sanitizeRequestData } from '../utils'
 
 export interface TypiaBadRequestException extends Omit<
   TypeGuardError,
@@ -31,6 +31,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
     const request = ctx.getRequest<FastifyRequest>()
+    const isDevelopment = process.env.NODE_ENV === 'development'
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus()
@@ -47,11 +48,11 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
 
         this.logger.error({
           exception,
-          headers: sanitizeHeaders(request.headers),
+          headers: sanitizeRequestData(request.headers),
           url: request.url,
         })
 
-        if (process.env.NODE_ENV === 'development') {
+        if (isDevelopment) {
           exceptionResponse.stack = exception.stack
         }
 
