@@ -14,12 +14,18 @@ import { loggerConfig } from './configs/logger.config'
 import { OPENAPI_BASE } from './openapi-base.const'
 
 export async function bootstrap() {
+  /**
+   * Fastify
+   */
   const fastifyAdapter = new FastifyAdapter({
     trustProxy: true,
     logger: loggerConfig,
   })
-
   const fastifyLogger = fastifyAdapter.getInstance().log
+
+  /**
+   * NestFactory
+   */
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     fastifyAdapter,
@@ -29,9 +35,15 @@ export async function bootstrap() {
     },
   )
 
+  /**
+   * Nestia Swagger
+   */
   const document = await NestiaSwaggerComposer.document(app, OPENAPI_BASE)
   SwaggerModule.setup('api', app, document as any)
 
+  /**
+   * Fastify Metrics
+   */
   app.register(fastifyMetrics, {
     endpoint: '/metrics',
   })
@@ -42,7 +54,9 @@ export async function bootstrap() {
 
   await app.listen(port, host)
 
-  // Send ready message to master process
+  /**
+   * Send ready message to master process
+   */
   if (process.send) {
     process.send('ready')
   }

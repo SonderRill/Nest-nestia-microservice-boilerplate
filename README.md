@@ -108,8 +108,8 @@ cp .env.example .env
 # 3. Установка зависимостей
 pnpm install
 
-# 4. Запуск инфраструктуры (PostgreSQL, Grafana, Prometheus)
-docker compose up -d
+# 4. Запуск инфраструктуры (PostgreSQL, Grafana, Prometheus, Loki)
+docker compose up -d db prometheus grafana loki
 
 # 5. Применение миграций базы данных
 pnpm run prisma:dev
