@@ -2,6 +2,8 @@
 
 Современный шаблон для создания высокопроизводительных микросервисов на базе NestJS с полной типизацией, валидацией и автоматической генерацией SDK.
 
+**[🇬🇧 English Documentation](#-english-documentation)** | **[🇷🇺 Русская Документация](#-содержание)**
+
 ## 📋 Содержание
 
 - [Технологии](#-технологии)
@@ -182,6 +184,123 @@ SDK генерируется из всех контроллеров в дире�
 | `pnpm run sdk:build:hard` | Полная пересборка SDK (с очисткой структур) |
 | `pnpm run sdk:push` | Публикация SDK в npm (минорная версия) |
 | `pnpm run sdk:push:major` | Публикация SDK в npm (мажорная версия) |
+
+<details>
+<summary><strong>📤 Настройка публикации SDK в npm</strong></summary>
+
+<blockquote>
+
+#### 📤 Настройка публикации SDK в npm
+
+Перед публикацией SDK в npm необходимо настроить `package.json` в директории `sdk-package/api` под ваш проект.
+
+##### 1. Настройка package.json
+
+Отредактируйте файл `sdk-package/api/package.json` и измените следующие поля:
+
+```json
+{
+  "name": "@your-org/your-package-name",  // Имя вашего пакета в npm
+  "version": "1.0.0",                     // Начальная версия
+  "description": "Описание вашего SDK",   // Описание пакета
+  "author": "Ваше имя или организация",   // Автор пакета
+  "publishConfig": {
+    "access": "public"                     // или "restricted" для приватных пакетов
+  }
+}
+```
+
+**Важные поля:**
+
+- **`name`** — имя пакета в npm. Для scoped пакетов (начинающихся с `@`) используйте формат `@your-org/package-name`. Для публичных scoped пакетов обязательно укажите `"access": "public"` в `publishConfig`.
+- **`version`** — версия пакета. При публикации версия автоматически увеличивается командой `pnpm version`.
+- **`description`** — краткое описание пакета, которое будет отображаться на странице пакета в npm.
+- **`author`** — информация об авторе (имя, email или организация).
+- **`publishConfig.access`** — уровень доступа:
+  - `"public"` — публичный пакет (доступен всем)
+  - `"restricted"` — приватный пакет (требует платную подписку npm)
+
+##### 2. Подключение к npm
+
+Перед первой публикацией необходимо авторизоваться в npm:
+
+```bash
+# Авторизация в npm (откроется браузер для входа)
+npm login
+
+# Или через командную строку (без браузера)
+npm login --auth-type=legacy
+
+# Проверка текущего пользователя
+npm whoami
+```
+
+**Для scoped пакетов (@your-org/package-name):**
+
+Если вы публикуете scoped пакет впервые, убедитесь, что:
+1. Организация `@your-org` существует в npm (или используйте свой username: `@username/package-name`)
+2. Вы имеете права на публикацию в эту организацию
+3. В `publishConfig` указан `"access": "public"` для публичных пакетов
+
+**Создание организации в npm:**
+
+1. Перейдите на [npmjs.com](https://www.npmjs.com/)
+2. Войдите в свой аккаунт
+3. Перейдите в Settings → Organizations
+4. Создайте новую организацию (бесплатно для публичных пакетов)
+
+##### 3. Публикация SDK
+
+После настройки `package.json` и авторизации в npm:
+
+```bash
+# Публикация с увеличением минорной версии (1.0.0 → 1.1.0)
+pnpm run sdk:push
+
+# Публикация с увеличением мажорной версии (1.0.0 → 2.0.0)
+pnpm run sdk:push:major
+```
+
+**Что происходит при публикации:**
+
+1. Сборка SDK (`pnpm run build`)
+2. Форматирование кода (`pnpm run format`)
+3. Увеличение версии (`pnpm version minor` или `pnpm version major`)
+4. Публикация в npm (`pnpm publish`)
+
+**Проверка публикации:**
+
+После успешной публикации пакет будет доступен по адресу:
+```
+https://www.npmjs.com/package/@your-org/your-package-name
+```
+
+**Установка опубликованного SDK:**
+
+```bash
+pnpm add @your-org/your-package-name
+# или
+npm install @your-org/your-package-name
+```
+
+##### 4. Использование приватного npm registry (опционально)
+
+Если вы используете приватный npm registry (например, GitHub Packages, GitLab Package Registry, или корпоративный registry):
+
+```bash
+# Настройка registry для scoped пакетов
+npm config set @your-org:registry https://npm.pkg.github.com
+
+# Или через .npmrc файл в корне проекта
+echo "@your-org:registry=https://npm.pkg.github.com" >> .npmrc
+echo "//npm.pkg.github.com/:_authToken=YOUR_TOKEN" >> .npmrc
+```
+
+**Важно:** При использовании приватного registry убедитесь, что токен доступа настроен правильно и имеет права на публикацию пакетов.
+
+</blockquote>
+
+</details>
 
 #### Пример использования SDK
 
@@ -572,3 +691,457 @@ MIT
 ---
 
 **Сделано с ❤️ для разработчиков**
+
+---
+
+## 🇬🇧 English Documentation
+
+# 🚀 NestJS Microservice Boilerplate
+
+Modern template for creating high-performance microservices based on NestJS with full typing, validation, and automatic SDK generation.
+
+**[🇬🇧 English Documentation](#-english-documentation)** | **[🇷🇺 Русская Документация](#-содержание)**
+
+## 📋 Table of Contents
+
+- [Technologies](#-technologies)
+- [Quick Start](#-quick-start)
+- [Key Features](#-key-features)
+  - [Cursor AI Prompts](#-cursor-ai-prompts)
+  - [SDK Generation](#-sdk-generation)
+  - [Input Validation](#-input-validation)
+  - [OpenAPI Specification Generation](#-openapi-specification-generation)
+  - [Cluster Mode Support](#-cluster-mode-support)
+  - [Logs and Metrics](#-logs-and-metrics)
+- [Prisma 7](#-prisma-7-1)
+- [Dependency Updates](#-dependency-updates)
+- [Code Quality Checks](#-code-quality-checks)
+
+---
+
+## 🛠 Technologies
+
+The project is built on a modern technology stack:
+
+- **[Node.js 22+](https://nodejs.org/)** — JavaScript runtime environment
+- **[pnpm](https://pnpm.io/)** — fast and efficient package manager
+- **[NestJS 11+](https://nestjs.com/)** — progressive Node.js framework
+- **[Fastify](https://fastify.dev/)** — high-performance web framework ([NestJS Fastify Adapter](https://github.com/nestjs/nest/tree/master/packages/platform-fastify))
+- **[Prisma 7](https://www.prisma.io/)** — modern ORM with type safety
+- **[Nestia](https://nestia.io/)** — automatic SDK and OpenAPI generation
+- **[Typia](https://typia.io/)** — ultra-fast validation and type transformation
+- **[h2load](https://nghttp2.org/documentation/h2load-howto.html)** — tool for load testing
+
+### 🐳 Docker Environment
+
+The project includes a complete Docker environment for development and production deployment.
+
+#### Docker Compose
+
+The ready-to-use `docker-compose.yml` includes all necessary services:
+
+- **Application (app)** — NestJS application built from Dockerfile
+- **PostgreSQL (db)** — database with healthcheck and persistent storage
+- **[Grafana](https://grafana.com)** with pre-installed dashboards and **[Loki](https://github.com/grafana/loki)** — http://localhost:3000
+- **[Prometheus](https://prometheus.io/)** — http://localhost:9090
+- **Swagger UI** — http://localhost:7000/api
+
+#### Running via Docker Compose
+
+```bash
+# Start all services (app + db + monitoring)
+docker compose up -d --build
+
+# View logs
+docker compose logs -f app
+
+# Stop all services
+docker compose down
+
+# Stop with volume removal
+docker compose down -v
+```
+
+**Important:** In Docker environment, `DATABASE_URL` should point to the service name `db`, not `localhost`.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js >= 22.0.0
+- pnpm >= 8.0.0 ([installation](https://pnpm.io/installation))
+- Docker and Docker Compose (for infrastructure)
+- PostgreSQL (via Docker Compose or locally)
+
+### Installation and Setup
+
+#### Option 1: Local Development
+
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd example-nest-typia
+
+# 2. Create .env file from example
+cp .env.example .env
+
+# 3. Install dependencies
+pnpm install
+
+# 4. Start infrastructure (PostgreSQL, Grafana, Prometheus, Loki)
+docker compose up -d db prometheus grafana loki
+
+# 5. Apply database migrations
+pnpm run prisma:dev
+
+# 6. Start application in development mode
+pnpm run start:dev
+
+# Or in debug mode (with debugger support)
+pnpm run start:debug
+```
+
+The application will be available at: **http://localhost:7000**
+
+#### Option 2: Run via Docker Compose
+
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd example-nest-typia
+
+# 2. Create .env file from example
+cp .env.example .env
+# Edit .env file if needed
+
+# 3. Start all services via Docker Compose
+docker compose up -d --build
+
+# Application will be automatically built and started in container
+```
+
+The application will be available at: **http://localhost:7000**
+
+---
+
+## ✨ Key Features
+
+### 🤖 Cursor AI Prompts
+
+The project includes configured prompts and rules for [Cursor AI](https://cursor.sh/) that help the AI assistant better understand the project structure and generate code according to accepted conventions.
+
+**Configured rules include:**
+
+- ✅ **DTO naming conventions** — automatic application of naming rules for Body, Query, and Output DTOs
+- ✅ **Prisma types usage** — correct work with types from `@prisma/client`
+- ✅ **Fastify work** — proper use of Fastify types instead of Express
+- ✅ **Helper types for lists** — automatic use of `GetManyParamsDto` and `GetManyResponseDto`
+- ✅ **Nestia and decorators** — proper use of `@TypedQuery`, `@TypedBody`, `@TypedParam` instead of standard NestJS decorators
+- ✅ **OpenAPI documentation** — automatic addition of JSDoc comments with `@tag` and `@summary`
+- ✅ **Typia validation** — proper use of validation from Typia
+
+These rules help Cursor AI generate code that matches project standards, significantly speeding up development and reducing errors.
+
+### 📦 SDK Generation
+
+The project supports automatic TypeScript SDK generation based on controllers using [Nestia SDK](https://nestia.io/docs/sdk/).
+
+SDK is generated from all controllers in the `src/**/*.controller.ts` directory (excluding webhook controllers) and placed in the `nestia-api` directory. The ready SDK build is located in `sdk-package/api`.
+
+#### SDK Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run sdk:build` | Build SDK |
+| `pnpm run sdk:build:hard` | Full SDK rebuild (with structure cleanup) |
+| `pnpm run sdk:push` | Publish SDK to npm (minor version) |
+| `pnpm run sdk:push:major` | Publish SDK to npm (major version) |
+
+<details>
+<summary><strong>📤 Configuring SDK Publication to npm</strong></summary>
+
+#### 📤 Configuring SDK Publication to npm
+
+Before publishing SDK to npm, you need to configure `package.json` in the `sdk-package/api` directory for your project.
+
+##### 1. Configuring package.json
+
+Edit the `sdk-package/api/package.json` file and change the following fields:
+
+```json
+{
+  "name": "@your-org/your-package-name",  // Your package name in npm
+  "version": "1.0.0",                     // Initial version
+  "description": "Your SDK description",  // Package description
+  "author": "Your name or organization",  // Package author
+  "publishConfig": {
+    "access": "public"                     // or "restricted" for private packages
+  }
+}
+```
+
+**Important fields:**
+
+- **`name`** — package name in npm. For scoped packages (starting with `@`) use the format `@your-org/package-name`. For public scoped packages, be sure to specify `"access": "public"` in `publishConfig`.
+- **`version`** — package version. Version is automatically incremented by `pnpm version` command during publication.
+- **`description`** — brief package description that will be displayed on the package page in npm.
+- **`author`** — author information (name, email, or organization).
+- **`publishConfig.access`** — access level:
+  - `"public"` — public package (available to everyone)
+  - `"restricted"` — private package (requires paid npm subscription)
+
+##### 2. Connecting to npm
+
+Before the first publication, you need to authenticate in npm:
+
+```bash
+# Authentication in npm (will open browser for login)
+npm login
+
+# Or via command line (without browser)
+npm login --auth-type=legacy
+
+# Check current user
+npm whoami
+```
+
+**For scoped packages (@your-org/package-name):**
+
+If you're publishing a scoped package for the first time, make sure:
+1. The `@your-org` organization exists in npm (or use your username: `@username/package-name`)
+2. You have publishing rights to this organization
+3. `"access": "public"` is specified in `publishConfig` for public packages
+
+##### 3. Publishing SDK
+
+After configuring `package.json` and authenticating in npm:
+
+```bash
+# Publish with minor version increment (1.0.0 → 1.1.0)
+pnpm run sdk:push
+
+# Publish with major version increment (1.0.0 → 2.0.0)
+pnpm run sdk:push:major
+```
+
+**What happens during publication:**
+
+1. SDK build (`pnpm run build`)
+2. Code formatting (`pnpm run format`)
+3. Version increment (`pnpm version minor` or `pnpm version major`)
+4. Publication to npm (`pnpm publish`)
+
+**Verifying publication:**
+
+After successful publication, the package will be available at:
+```
+https://www.npmjs.com/package/@your-org/your-package-name
+```
+
+**Installing published SDK:**
+
+```bash
+pnpm add @your-org/your-package-name
+# or
+npm install @your-org/your-package-name
+```
+
+</details>
+
+#### SDK Usage Example
+
+```typescript
+import { IConnection } from '@nestia/fetcher'
+import api from '@baron-zemo/backend-api2'
+
+// Create connection
+const connection: IConnection = {
+  host: 'http://localhost:7000',
+  headers: {
+    // Authorization: 'Bearer your-token-here'
+  }
+}
+
+// GET request with query parameters
+const helloResponse = await api.functional.getHello(connection, {
+  text: 'Hello World',
+  num: 42
+})
+
+// POST request with body
+const post = await api.functional.post.createPost(connection, {
+  title: 'My Post',
+  body: 'Post content',
+  email: 'user@example.com'
+})
+```
+
+SDK provides full typing for all requests and responses, automatic data validation, and authorization support through headers.
+
+**More details:** [Nestia SDK Documentation](https://nestia.io/docs/sdk/)
+
+### ✅ Input Validation
+
+For input validation in controllers, decorators from `@nestia/core` are used instead of standard ones. This module uses **[Typia](https://typia.io/)** internally — the fastest TypeScript validator that provides runtime validation based on TypeScript types with near-native performance.
+
+Typia supports full type validation, data transformation, and JSON Schema generation. All validations are performed at compile time, ensuring type safety and maximum performance.
+
+**Full list of validation tags:** [Typia Validators](https://typia.io/docs/validators/tags/)
+
+---
+
+### 📚 OpenAPI Specification Generation
+
+Pre-configured OpenAPI specification generator based on `@nestia/sdk`, compatible with `@nestia/core` validation.
+
+- **Swagger UI:** http://localhost:7000/api
+- **OpenAPI JSON:** http://localhost:7000/api-json
+- **File generation:** `pnpm run build:swagger`
+
+Basic OpenAPI settings are taken from the `src/openapi-base.const.ts` file. Project name is taken from `package.json`.
+
+**More details:** [Nestia SDK Swagger](https://nestia.io/docs/sdk/swagger/)
+
+---
+
+### 🔄 Cluster Mode Support
+
+The application startup point has been changed for optional cluster mode support ([node:cluster](https://nodejs.org/api/cluster.html)).
+
+`src/main.ts` no longer starts the web server, instead it exports a `bootstrap` function.
+
+**Startup files:**
+
+- `src/bin/single` — standard single-threaded startup
+- `src/bin/cluster` — multi-threaded startup (cluster)
+
+**Commands:**
+
+```bash
+# Production (single-threaded)
+pnpm run start:prod
+
+# Production (cluster)
+pnpm run start:prod:cluster
+```
+
+**Configuring worker count:**
+
+The number of workers can be configured via the `CLUSTER_WORKERS` environment variable. By default, the number of available logical CPU cores is used (determined via `availableParallelism()`).
+
+```bash
+# Run with 4 workers
+CLUSTER_WORKERS=4 pnpm run start:prod:cluster
+
+# Run with 8 workers
+CLUSTER_WORKERS=8 pnpm run start:prod:cluster
+```
+
+---
+
+### 📊 Logs and Metrics
+
+#### Pino-based Logging
+
+The project uses [Pino](https://getpino.io/) as a high-performance logger instead of the standard `ConsoleLogger` from NestJS. Full compatibility with NestJS API and logging context is maintained.
+
+**Configuration:**
+
+Settings are located in `src/configs/logger.config.ts` and managed via environment variables:
+
+- `LOG_LEVEL` — logging level (`silent`, `error`, `warn`, `info`, `debug`)
+- `ENABLE_CONSOLE_LOGGING` — enable/disable console output
+- `LOKI_URL` — URL for sending logs to Loki (optional)
+- `LOKI_USERNAME` / `LOKI_PASSWORD` — Loki credentials (optional)
+
+#### Prometheus Metrics
+
+Configured metrics collection in [Prometheus](https://prometheus.io/) with the ability to use custom metrics via `MetricsService`.
+
+---
+
+## 🗄 Prisma 7
+
+The project uses **Prisma 7** — a modern ORM with improved performance, type safety, and convenient tools for working with databases.
+
+### Prisma 7 Features
+
+- ✅ **Improved performance** — faster client generation and query execution
+- ✅ **Extended type safety** — full TypeScript support
+- ✅ **Flexible configuration** — configuration via `prisma.config.ts`
+- ✅ **Custom output** — client is generated in `prisma/generated/prisma`
+
+### Prisma Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run prisma:format` | Format Prisma schema |
+| `pnpm run prisma:generate` | Generate Prisma Client |
+| `pnpm run prisma:create` | Create new migration (without applying) |
+| `pnpm run prisma:dev` | Create and apply migration in dev mode |
+| `pnpm run prisma:deploy` | Apply migrations in production |
+| `pnpm run prisma:down` | Generate SQL for migration rollback |
+| `pnpm run prisma:seed` | Seed database with test data |
+
+**Documentation:** [Prisma Documentation](https://www.prisma.io/docs)
+
+---
+
+## 🔄 Dependency Updates
+
+The project provides convenient commands for checking and updating dependencies.
+
+### Update Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run update` | Check available updates (without installation) |
+| `pnpm run update:run` | Automatically update all dependencies |
+| `pnpm run sdk:update` | Check updates for SDK package |
+| `pnpm run sdk:update:run` | Automatically update SDK dependencies |
+
+### Recommendations
+
+- ⚠️ Always check changelog before updating major versions
+- ✅ Update dependencies gradually, especially in production projects
+- ✅ Run tests after updating
+- ✅ Check compatibility with other dependencies
+
+---
+
+## 🔍 Code Quality Checks
+
+The project uses [Husky](https://typicode.github.io/husky/) for automatic checks before each commit. This ensures that only quality code enters the repository.
+
+### Automatic Pre-commit Checks
+
+When executing `git commit`, the following checks are automatically run:
+
+1. **Code formatting** (`pnpm run format`)
+   - Automatic formatting of all files using [Prettier](https://prettier.io/)
+
+2. **Code linting** (`pnpm run lint`)
+   - Code checking using [ESLint](https://eslint.org/)
+   - Automatic fixing of found issues (where possible)
+
+3. **Circular dependency check** (`pnpm run lint:deps`)
+   - Dependency analysis using [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
+   - Detection of circular imports between modules
+
+### Important
+
+- ❌ If checks fail, the commit will be rejected
+- ✅ All checks must pass successfully before commit
+- ✅ This helps maintain code quality and avoid module initialization issues in NestJS
+
+---
+
+## 📄 License
+
+MIT
+
+---
+
+**Made with ❤️ for developers**
