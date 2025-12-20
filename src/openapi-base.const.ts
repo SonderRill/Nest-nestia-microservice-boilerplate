@@ -1,7 +1,4 @@
 import { INestiaConfig } from '@nestia/sdk'
-import * as dotenv from 'dotenv'
-
-dotenv.config()
 
 export const OPENAPI_BASE: INestiaConfig.ISwaggerConfig = {
   output: 'dist/swagger.json',

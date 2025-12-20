@@ -2,7 +2,7 @@ FROM node:22-alpine AS base
 # Install openssl for Prisma (required for runtime)
 RUN apk add --no-cache openssl
 WORKDIR /usr/src/app
-RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.26.0 --activate
 
 FROM base AS deps
 COPY package.json pnpm-lock.yaml ./

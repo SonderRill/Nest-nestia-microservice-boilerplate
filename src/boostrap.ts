@@ -1,5 +1,6 @@
+import { randomUUID } from 'node:crypto'
+
 import { NestiaSwaggerComposer } from '@nestia/sdk'
-import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import {
   FastifyAdapter,
@@ -9,8 +10,8 @@ import { SwaggerModule } from '@nestjs/swagger'
 import fastifyMetrics from 'fastify-metrics'
 
 import { AppModule } from './app.module'
-import { PinoLogger } from './common/services/pino-logger.service'
-import { loggerConfig } from './configs/logger.config'
+import { PinoLogger } from './common/services'
+import { loggerConfig, TypedConfigService } from './configs'
 import { OPENAPI_BASE } from './openapi-base.const'
 
 export async function bootstrap() {
@@ -20,6 +21,9 @@ export async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter({
     trustProxy: true,
     logger: loggerConfig,
+    // implemented in logging.interceptor.ts
+    disableRequestLogging: true,
+    genReqId: () => randomUUID(),
   })
   const fastifyLogger = fastifyAdapter.getInstance().log
 
@@ -48,9 +52,12 @@ export async function bootstrap() {
     endpoint: '/metrics',
   })
 
-  const configService = app.get(ConfigService)
-  const port = configService.get<number>('PORT', 7000)
-  const host = configService.get<string>('HOST', '127.0.0.1')
+  /**
+   * Start server
+   */
+  const configService = app.get(TypedConfigService)
+  const port = configService.get('PORT', 7000)
+  const host = configService.get('HOST', '127.0.0.1')
 
   await app.listen(port, host)
 
@@ -61,10 +68,8 @@ export async function bootstrap() {
     process.send('ready')
   }
 
-  const enableConsoleLogging = configService.get<boolean>(
-    'ENABLE_CONSOLE_LOGGING',
-    true,
-  )
+  const enableConsoleLogging = configService.get('ENABLE_CONSOLE_LOGGING', true)
+
   fastifyLogger.info(
     'Application started on ' +
       host +
@@ -78,7 +83,7 @@ export async function bootstrap() {
         host +
         ':' +
         port +
-        '.\n Access to the documentation is available on /api',
+        '.\nAccess to the documentation is available on /api',
     )
   }
 }

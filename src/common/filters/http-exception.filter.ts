@@ -1,9 +1,13 @@
-import { ArgumentsHost, Catch, HttpException, Logger } from '@nestjs/common'
+import {
+  ArgumentsHost,
+  Catch,
+  HttpException,
+  IntrinsicException,
+} from '@nestjs/common'
 import { BaseExceptionFilter } from '@nestjs/core'
-import { FastifyRequest } from 'fastify'
 import { TypeGuardError } from 'typia'
 
-import { sanitizeRequestData } from '../utils'
+import { TypedConfigService } from '../../configs'
 
 export interface TypiaBadRequestException extends Omit<
   TypeGuardError,
@@ -22,16 +26,12 @@ export interface CommonError {
 
 @Catch()
 export class HttpExceptionFilter extends BaseExceptionFilter {
-  private readonly logger = new Logger(HttpExceptionFilter.name)
-
-  constructor() {
+  constructor(private readonly configService: TypedConfigService) {
     super()
   }
 
   catch(exception: any, host: ArgumentsHost) {
-    const ctx = host.switchToHttp()
-    const request = ctx.getRequest<FastifyRequest>()
-    const isDevelopment = process.env.NODE_ENV === 'development'
+    const isDevelopment = this.configService.get('NODE_ENV') === 'development'
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus()
@@ -43,14 +43,8 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
           typeof exceptionResponse.message !== 'string' &&
           typeof exceptionResponse.message !== 'number'
         ) {
-          throw new Error('message should be a string')
+          throw new Error('log message should be a string or number')
         }
-
-        this.logger.error({
-          exception,
-          headers: sanitizeRequestData(request.headers),
-          url: request.url,
-        })
 
         if (isDevelopment) {
           exceptionResponse.stack = exception.stack
@@ -61,6 +55,8 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
           exceptionResponse.message || exception.message
         ).toString()
       }
+    } else {
+      exception = new IntrinsicException(exception)
     }
 
     super.catch(exception, host)

@@ -1,5 +1,4 @@
 import { Controller, Get } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import {
   DiskHealthIndicator,
   HealthCheck,
@@ -10,6 +9,7 @@ import {
   PrismaHealthIndicator,
 } from '@nestjs/terminus'
 
+import { TypedConfigService } from '../configs'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Controller('health')
@@ -23,19 +23,19 @@ export class HealthController {
     private readonly http: HttpHealthIndicator,
     private readonly memory: MemoryHealthIndicator,
     private readonly disk: DiskHealthIndicator,
-    private readonly configService: ConfigService,
+    private readonly configService: TypedConfigService,
     private prisma: PrismaHealthIndicator,
     private prismaService: PrismaService,
   ) {
-    this.HEALTHY_MEMORY_HEAP_LIMIT = Number(
-      this.configService.get<number>('HEALTHY_MEMORY_HEAP_LIMIT'),
+    this.HEALTHY_MEMORY_HEAP_LIMIT = this.configService.get(
+      'HEALTHY_MEMORY_HEAP_LIMIT',
     )
-    this.HEALTHY_MEMORY_RSS_LIMIT = Number(
-      this.configService.get<number>('HEALTHY_MEMORY_RSS_LIMIT'),
+
+    this.HEALTHY_MEMORY_RSS_LIMIT = this.configService.get(
+      'HEALTHY_MEMORY_RSS_LIMIT',
     )
-    this.HEALTHY_DISC_LIMIT = Number(
-      this.configService.get<number>('HEALTHY_DISC_LIMIT'),
-    )
+
+    this.HEALTHY_DISC_LIMIT = this.configService.get('HEALTHY_DISC_LIMIT')
   }
 
   /**

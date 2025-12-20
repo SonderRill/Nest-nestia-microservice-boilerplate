@@ -77,12 +77,21 @@ export class PinoLogger extends ConsoleLogger {
   private prepareLogData(...args: any[]) {
     try {
       const len = args.length
+      if (len === 0) {
+        return {
+          msg: undefined,
+          context: undefined,
+          err: undefined,
+          data: undefined,
+        }
+      }
 
-      let msg: any, err, data
+      let msg: any, err: Error | undefined, data: any
       const context = args[len - 1]
 
       for (let i = 0; i < len - 1; i++) {
         const v = args[i]
+
         if (v === null || typeof v === 'string' || typeof v === 'number') {
           if (msg === undefined) {
             msg = v
@@ -98,10 +107,24 @@ export class PinoLogger extends ConsoleLogger {
         }
       }
 
+      if (data && typeof data === 'object' && !Array.isArray(data) && !err) {
+        const errorField =
+          data.err instanceof Error
+            ? data.err
+            : data.error instanceof Error
+              ? data.error
+              : undefined
+
+        if (errorField) {
+          err = errorField
+          const { err: _err, error: _error, ...restData } = data
+          data = Object.keys(restData).length > 0 ? restData : undefined
+        }
+      }
+
       return { msg, context, err, data }
     } catch (error) {
       this.pino.error('error from logger prepareLogData', error)
-
       throw error
     }
   }

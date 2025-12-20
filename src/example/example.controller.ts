@@ -8,7 +8,7 @@ import { PowerResponse } from './dto/power.response'
 
 @Controller()
 export class ExampleController {
-  private readonly logger = new Logger()
+  private readonly logger = new Logger(ExampleController.name)
 
   /**
    * It can be used to store multiline method<br/>

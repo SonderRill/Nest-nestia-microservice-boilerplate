@@ -1,35 +1,35 @@
-import { ConfigService } from '@nestjs/config'
+import * as dotenv from 'dotenv'
 import { FastifyServerOptions } from 'fastify'
 import pino from 'pino'
 import { LokiOptions } from 'pino-loki'
 
 import * as packageJson from '../../package.json'
 
-const config = new ConfigService()
+dotenv.config()
 
 const targets: pino.TransportTargetOptions[] = []
 
-const LOG_LEVEL = config.get('LOG_LEVEL', 'debug')
-const ENABLE_CONSOLE_LOGGING = config.get('ENABLE_CONSOLE_LOGGING', 'true')
+const LOG_LEVEL = process.env.LOG_LEVEL || 'debug'
+const ENABLE_CONSOLE_LOGGING = process.env.ENABLE_CONSOLE_LOGGING || 'true'
 
-if (config.get('LOKI_URL')) {
+if (process.env.LOKI_URL) {
   targets.push({
     target: 'pino-loki',
     level: LOG_LEVEL,
     options: {
-      translateTime: 'dd/mm/yyyy, HH:MM:ss Z',
-      batching: true, // Whether logs should be sent in batch mode. Default is true.
-      interval: 5, // Interval for sending batch logs in seconds. Default is 5.
-      labels: {
-        // Additional labels that will be added to all Loki logs
-        app: packageJson.name,
-        env: config.get('NODE_ENV'),
+      batching: {
+        interval: 5,
+        maxBufferSize: 10_000,
       },
-      host: config.get('LOKI_URL'),
-      ...(config.get('LOKI_USERNAME') && {
+      labels: {
+        app: packageJson.name,
+        env: process.env.NODE_ENV as string,
+      },
+      host: process.env.LOKI_URL,
+      ...(process.env.LOKI_USERNAME && {
         basicAuth: {
-          username: config.get('LOKI_USERNAME'),
-          password: config.get('LOKI_PASSWORD'),
+          username: process.env.LOKI_USERNAME,
+          password: process.env.LOKI_PASSWORD || '',
         },
       }),
     } satisfies LokiOptions,

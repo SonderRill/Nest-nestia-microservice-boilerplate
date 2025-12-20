@@ -1,0 +1,50 @@
+---
+alwaysApply: true
+---
+
+## Конфигурация
+
+### Всегда используй TypedConfigService вместо ConfigService
+
+- **ОБЯЗАТЕЛЬНО**: Используй `TypedConfigService` из `src/configs` вместо `ConfigService` из `@nestjs/config`
+- `TypedConfigService` предоставляет полную типизацию переменных окружения через `EnvironmentVariables`
+- **ВАЖНО**: `TypedConfigService` можно использовать **ТОЛЬКО** в рамках DI провайдеров (через dependency injection)
+- При инжекции в конструктор используй: `constructor(private readonly configService: TypedConfigService)`
+- **НЕ создавай** экземпляры напрямую через `new TypedConfigService()` - это работает только в контексте DI
+
+**Примеры правильного использования:**
+
+```typescript
+// ✅ Правильно - использование через DI
+import { TypedConfigService } from 'src/configs'
+
+@Injectable()
+export class MyService {
+  constructor(private readonly configService: TypedConfigService) {
+    const port = this.configService.get('PORT', 7000)
+  }
+}
+```
+
+```typescript
+// ❌ Неправильно - НЕ используй ConfigService напрямую
+import { ConfigService } from '@nestjs/config'
+
+@Injectable()
+export class MyService {
+  constructor(private readonly configService: ConfigService) {
+    // Это лишает нас типизации
+  }
+}
+```
+
+```typescript
+// ❌ Неправильно - НЕ создавай экземпляры напрямую
+import { TypedConfigService } from 'src/configs'
+
+// Вне DI контейнера используй process.env напрямую
+const port = process.env.PORT || '7000'
+
+// Или если нужен доступ к конфигурации вне DI, используй process.env
+const config = new TypedConfigService() // ❌ НЕ ДЕЛАЙ ТАК
+```

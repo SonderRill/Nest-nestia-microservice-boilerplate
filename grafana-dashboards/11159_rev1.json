@@ -260,7 +260,7 @@
         "y": 0
       },
       "id": 2,
-      "interval": "",
+      "interval": null,
       "links": [],
       "mappingType": 1,
       "mappingTypes": [
@@ -276,6 +276,8 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
+      "pluginVersion": "6.5.0",
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -291,16 +293,14 @@
         "fillColor": "rgba(31, 118, 189, 0.18)",
         "full": false,
         "lineColor": "rgb(31, 120, 193)",
-        "show": false
+        "show": false,
+        "ymax": null,
+        "ymin": null
       },
-      "tableColumn": "__name__",
+      "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(nodejs_version_info{instance=~\"$instance\"}) by (version)",
-          "format": "time_series",
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
+          "expr": "nodejs_version_info{instance=~\"$instance\"}",
           "legendFormat": "{{version}}",
           "refId": "A"
         }
@@ -381,7 +381,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(changes(process_start_time_seconds{instance=~\"$instance\"}[1m]))",
+          "expr": "sum(changes(process_start_time_seconds{instance=~\"$instance\"}[$__range]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{instance}}",
