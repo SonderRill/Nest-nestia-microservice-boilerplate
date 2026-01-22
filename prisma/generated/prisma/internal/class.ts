@@ -15,8 +15,8 @@ import type * as Prisma from './prismaNamespace'
 
 const config: runtime.GetPrismaClientConfig = {
   previewFeatures: [],
-  clientVersion: '7.1.0',
-  engineVersion: 'ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba',
+  clientVersion: '7.3.0',
+  engineVersion: '9d6ad21cbbceab97458517b147a6a09ff43aa735',
   activeProvider: 'postgresql',
   inlineSchema:
     '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Typia for prisma https://typia.io/docs/utilization/prisma/ \n\ngenerator client {\n  provider = "prisma-client"\n  output   = "./generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nmodel Post {\n  id        Int      @id @default(autoincrement())\n  /// @minLength 5\n  /// @maxLength 80\n  title     String\n  email     String   @unique /// @format email\n  body      String\n  updatedAt DateTime @updatedAt\n  createdAt DateTime @default(now())\n}\n',
@@ -41,13 +41,15 @@ async function decodeBase64AsWasm(
 
 config.compilerWasm = {
   getRuntime: async () =>
-    await import('@prisma/client/runtime/query_compiler_bg.postgresql.js'),
+    await import('@prisma/client/runtime/query_compiler_fast_bg.postgresql.js'),
 
   getQueryCompilerWasmModule: async () => {
     const { wasm } =
-      await import('@prisma/client/runtime/query_compiler_bg.postgresql.wasm-base64.js')
+      await import('@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.js')
     return await decodeBase64AsWasm(wasm)
   },
+
+  importName: './query_compiler_fast_bg.js',
 }
 
 export type LogOptions<ClientOptions extends Prisma.PrismaClientOptions> =

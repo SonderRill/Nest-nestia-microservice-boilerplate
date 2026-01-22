@@ -9,14 +9,14 @@ importers:
   .:
     dependencies:
       '@nestia/fetcher':
-        specifier: ^9.1.1
-        version: 9.1.1
+        specifier: ^10.0.2
+        version: 10.0.2
       tgrid:
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: ^1.2.1
+        version: 1.2.1
       typia:
-        specifier: ^10.1.0
-        version: 10.1.0(@types/node@20.19.27)(typescript@5.9.3)
+        specifier: ^11.0.1
+        version: 11.0.1(@types/node@20.19.27)(typescript@5.9.3)
     devDependencies:
       rimraf:
         specifier: ^6.1.2
@@ -47,11 +47,11 @@ packages:
     resolution: {integrity: sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==}
     engines: {node: 20 || >=22}
 
-  '@nestia/fetcher@9.1.1':
-    resolution: {integrity: sha512-1zzRfTu66eGqOlGhSrp/J/XvgDhAbxxAHm4XziYrlHpSUB5jb3KxP0b5yjkDke/6RX8Vdqmj+1KrQdLpWCy3UA==}
+  '@nestia/fetcher@10.0.2':
+    resolution: {integrity: sha512-+cHtz2aND+3O6TsMvRi6GZ2ledRWuGWY5LW38pk+RrnIRkhr+mWIok4n4AUnB3vvRPtTtWjX0B6CQAYV0GIvmQ==}
 
-  '@samchon/openapi@5.1.0':
-    resolution: {integrity: sha512-PudEhIB/YO+NJPv712+6U7H5qVGJ314QfOnabRxLWoR/A3Hw/wHuHq1Yeb1sdi1Xlx3dUWvGTKXuzE2qEfWR0w==}
+  '@samchon/openapi@6.0.0':
+    resolution: {integrity: sha512-6HnP9gf+RfdEYVuoqv9CCIHyZvSq2wktu8LuFdwzS8fTif+/cp6dN15oWmeGM6e+k3zn5H7LBepaU22pr3YiAg==}
 
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
@@ -336,8 +336,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  tgrid@1.2.0:
-    resolution: {integrity: sha512-AWARbZWFzq81nQz1HX3l+7wBOdtYfG7BcjXgiD7trm8qInv5PKston0NW8+S0A9ImZ6LuqKsSKPO8+ec8JqsCA==}
+  tgrid@1.2.1:
+    resolution: {integrity: sha512-8E37I7G5RiMlwNmsiA6y/FAiKTEGU1Hg4t0Set0WAcRdMnLugXzjRx9bBduF1YROT/hdcS8BNefSPKNHmwYtYA==}
 
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
@@ -361,8 +361,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typia@10.1.0:
-    resolution: {integrity: sha512-lKeDr+hv9hJgZbQhXtGZ2CUtGNaG6zN9Bz+t9fPIaaFcAbYbZstoo7887eqkCfg+C19QfNGRyGtLwiALvovczA==}
+  typia@11.0.1:
+    resolution: {integrity: sha512-Tm8WRayC/OHblOtlrdGaSqm9hcoP7FrrPuK6Af0Cw2rAY8lQ/XAn4IESpwHIEAhZnl86oAFgEIOOQyfFVxKQug==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.8.0 <5.10.0'
@@ -412,11 +412,11 @@ snapshots:
     dependencies:
       '@isaacs/balanced-match': 4.0.1
 
-  '@nestia/fetcher@9.1.1':
+  '@nestia/fetcher@10.0.2':
     dependencies:
-      '@samchon/openapi': 5.1.0
+      '@samchon/openapi': 6.0.0
 
-  '@samchon/openapi@5.1.0': {}
+  '@samchon/openapi@6.0.0': {}
 
   '@standard-schema/spec@1.0.0': {}
 
@@ -687,7 +687,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  tgrid@1.2.0:
+  tgrid@1.2.1:
     dependencies:
       '@types/node': 20.19.27
       '@types/websocket': 1.0.10
@@ -718,9 +718,9 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  typia@10.1.0(@types/node@20.19.27)(typescript@5.9.3):
+  typia@11.0.1(@types/node@20.19.27)(typescript@5.9.3):
     dependencies:
-      '@samchon/openapi': 5.1.0
+      '@samchon/openapi': 6.0.0
       '@standard-schema/spec': 1.0.0
       commander: 10.0.1
       comment-json: 4.5.0

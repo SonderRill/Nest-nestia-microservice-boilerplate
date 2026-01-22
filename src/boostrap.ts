@@ -7,7 +7,6 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify'
 import { SwaggerModule } from '@nestjs/swagger'
-import fastifyMetrics from 'fastify-metrics'
 
 import { AppModule } from './app.module'
 import { PinoLogger } from './common/services'
@@ -44,13 +43,6 @@ export async function bootstrap() {
    */
   const document = await NestiaSwaggerComposer.document(app, OPENAPI_BASE)
   SwaggerModule.setup('api', app, document as any)
-
-  /**
-   * Fastify Metrics
-   */
-  app.register(fastifyMetrics, {
-    endpoint: '/metrics',
-  })
 
   /**
    * Start server

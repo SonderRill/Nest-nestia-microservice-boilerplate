@@ -1,13 +1,12 @@
 import * as dotenv from 'dotenv'
-import { FastifyServerOptions } from 'fastify'
-import pino from 'pino'
+import { LoggerOptions, TransportTargetOptions } from 'pino'
 import { LokiOptions } from 'pino-loki'
 
 import * as packageJson from '../../package.json'
 
 dotenv.config()
 
-const targets: pino.TransportTargetOptions[] = []
+const targets: TransportTargetOptions[] = []
 
 const LOG_LEVEL = process.env.LOG_LEVEL || 'debug'
 const ENABLE_CONSOLE_LOGGING = process.env.ENABLE_CONSOLE_LOGGING || 'true'
@@ -47,7 +46,7 @@ if (ENABLE_CONSOLE_LOGGING === 'true') {
   })
 }
 
-export const loggerConfig: FastifyServerOptions['logger'] = {
+export const loggerConfig: LoggerOptions = {
   level: LOG_LEVEL,
   messageKey: 'msg',
   errorKey: 'err',
