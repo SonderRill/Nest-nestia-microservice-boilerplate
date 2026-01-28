@@ -15,11 +15,17 @@ import { tap } from 'rxjs/operators'
 import { TypedConfigService } from '../../configs'
 import { sanitizeRequestData } from '../utils'
 
+const LOG_EXCLUDED_PATHS = ['/metrics'] as readonly string[]
+
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name)
 
   constructor(private readonly configService: TypedConfigService) {}
+
+  private isExcludedFromLogging(path: string): boolean {
+    return LOG_EXCLUDED_PATHS.includes(path)
+  }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const ctx = context.switchToHttp()
@@ -27,27 +33,34 @@ export class LoggingInterceptor implements NestInterceptor {
     const response = ctx.getResponse<FastifyReply>()
     const isDevelopment = this.configService.get('NODE_ENV') === 'development'
 
+    const path = request.url.split('?')[0]
+    const isSkipLogging = this.isExcludedFromLogging(path)
+
     const reqId = (request.id as string) || randomUUID()
 
     const startTime = process.hrtime.bigint()
 
-    this.logger.log(
-      {
-        reqId,
-        req: {
-          method: request.method,
-          url: request.url,
-          host: request.headers.host || request.hostname,
-          remoteAddress: request.ip,
-          remotePort: request.socket?.remotePort,
+    if (!isSkipLogging) {
+      this.logger.log(
+        {
+          reqId,
+          req: {
+            method: request.method,
+            url: request.url,
+            host: request.headers.host || request.hostname,
+            remoteAddress: request.ip,
+            remotePort: request.socket?.remotePort,
+          },
         },
-      },
-      'incoming request',
-    )
+        'incoming request',
+      )
+    }
 
     return next.handle().pipe(
       tap({
         next: () => {
+          if (isSkipLogging) return
+
           const endTime = process.hrtime.bigint()
           const responseTimeMs = Number(endTime - startTime) / 1_000_000
 
@@ -63,6 +76,8 @@ export class LoggingInterceptor implements NestInterceptor {
           )
         },
         error: (error) => {
+          if (isSkipLogging) return
+
           const endTime = process.hrtime.bigint()
           const responseTimeMs = Number(endTime - startTime) / 1_000_000
 
